@@ -1,0 +1,1 @@
+# plugins-mabel-shoppable-images-lite
