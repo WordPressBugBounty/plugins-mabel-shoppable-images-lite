@@ -25,6 +25,7 @@ namespace MABEL_SILITE\Core\Common
 		{
 			ob_start();
 			include Config_Manager::$dir . $view . '.php';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo ob_get_clean();
 		}
 

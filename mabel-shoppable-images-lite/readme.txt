@@ -1,15 +1,15 @@
-=== Shoppable Images ===
+=== Shoppable Images (Lookbook) for WooCommerce ===
 Contributors: studiowombat,maartenbelmans
 Donate link: https://www.paypal.me/maartenbelmans
 Tags: shoppable image,hotspots,woocommerce,clickable image, image hotspots
 Requires at least: 3.7
-Tested up to: 6.6.1
+Tested up to: 6.8
 Required PHP: 5.6
-Stable tag: 1.2.6
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Create interactive 'shoppable' images with click-to-buy tags. Ideal to showcase your products in a different way and drive more traffic.
+Create interactive 'shoppable' images (lookbooks) with click-to-buy tags. Ideal to showcase your products in a different way and drive more traffic.
 
 == Description ==
 
@@ -56,6 +56,12 @@ More info about the premium version [can be found here](https://studiowombat.com
 14. Example of how it could look on your website.
 
 == Changelog ==
+
+= version 1.3 =
+ * Improvement: properly escape all output.
+ * Improvement: improve translations.
+ * Improvement: small performance improvements.
+ * Improvement: code modernization & cleanup.
 
 = version 1.2.6 =
  * Improvement: removed PHP deprecation warnings for PHP 8.2+.

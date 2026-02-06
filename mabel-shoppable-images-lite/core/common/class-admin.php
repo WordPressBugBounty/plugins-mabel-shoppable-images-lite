@@ -39,24 +39,48 @@ namespace MABEL_SILITE\Core\Common
 
 		public abstract function init_admin_page();
 
-		public function add_settings_link( $links )
-		{
-			$my_links = array(
+		public function add_settings_link( $links ) {
+			
+            $my_links = array(
 				'<a href="' . admin_url( 'options-general.php?page=' .Config_Manager::$slug ) . '">' .__('Settings' , 'mabel-shoppable-images-lite'). '</a>',
 			);
+            
 			return array_merge( $links, $my_links );
 		}
 
-		public function add_menu()
-		{
+		public function add_menu() {
 			$capability = apply_filters('shoppable_images_capability','manage_options');
 			add_options_page('', Config_Manager::$name, $capability, Config_Manager::$slug, array($this,'display_settings'));
 		}
 
-		public function init_settings()
-		{
-			register_setting( Config_Manager::$slug , Config_Manager::$settings_key );
+		public function init_settings() {
+			register_setting( 
+                Config_Manager::$slug , 
+                Config_Manager::$settings_key,
+                [
+                    'sanitize_callback' => [ $this, 'sanitize_settings' ],
+                ]
+            );
 		}
+        
+        public function sanitize_settings( $input ) {
+            
+            $output = [];
+
+            if ( isset( $input['tagbgcolor'] ) ) {
+                $output['tagbgcolor'] = sanitize_hex_color( $input['tagbgcolor'] );
+            }
+
+            if ( isset( $input['tagfgcolor'] ) ) {
+                $output['tagfgcolor'] = sanitize_hex_color( $input['tagfgcolor'] );
+            }
+
+            if ( isset( $input['buttontext'] ) ) {
+                $output['buttontext'] = sanitize_text_field( $input['buttontext'] );
+            }
+
+            return $output;
+        }
 
 		public function display_settings()
 		{
@@ -68,6 +92,7 @@ namespace MABEL_SILITE\Core\Common
 
 			ob_start();
 			include Config_Manager::$dir . 'core/views/start.php';
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo ob_get_clean();
 		}
 

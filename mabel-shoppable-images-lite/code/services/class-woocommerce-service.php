@@ -16,8 +16,9 @@ namespace MABEL_SILITE\Code\Services
 
 		public static function thing_to_html_attribute_string($thing) {
 
-			$encoded = wp_json_encode($thing);
-			return function_exists('wc_esc_json') ? wc_esc_json($encoded) : _wp_specialchars($encoded, ENT_QUOTES, 'UTF-8', true);
+			$encoded = wp_json_encode( $thing );
+
+            			return function_exists( 'wc_esc_json' ) ? wc_esc_json( $encoded ) : _wp_specialchars( $encoded, ENT_QUOTES, 'UTF-8', true );
 
 		}
 

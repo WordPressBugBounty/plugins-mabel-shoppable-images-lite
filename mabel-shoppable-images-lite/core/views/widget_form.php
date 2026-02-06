@@ -1,7 +1,5 @@
 <?php
-
 /** @var \MABEL_SILITE\Core\Common\Managers\Widget_Options_Manager $option_manager */
-
 ?>
 
 <div class="widget-options">
@@ -10,9 +8,9 @@
 		{
 			/** @var \MABEL_SILITE\Core\Models\Option $option */
 			echo '<p>';
-				echo '<label>' .$option->title. '</label>';
+				echo '<label>' . esc_html( $option->title ) . '</label>';
 				echo '<div>';
-					$option_manager->display_field(array('option' => $option));
+					$option_manager->display_field( [ 'option' => $option ] );
 				echo '</div>';
 			echo '</p>';
 		}

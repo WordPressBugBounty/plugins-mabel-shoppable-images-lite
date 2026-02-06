@@ -1,40 +1,42 @@
 <div class="upgrade-warning" style="display: none;">
 	<p>
-		<?php _e('To add more images, <a href="https://studiowombat.com/plugin/woocommerce-shoppable-images/?utm_source=sifree&utm_medium=plugin&utm_campaign=upsell" target="_blank">please upgrade to the pro version</a>', $slug); ?>
+		<?php
+        echo wp_kses( __( 'To add more images, <a href="https://studiowombat.com/plugin/woocommerce-shoppable-images/?utm_source=sifree&utm_medium=plugin&utm_campaign=upsell" target="_blank">please upgrade to the pro version</a>', 'mabel-shoppable-images-lite' ), [ 'a' => [ 'href' => true, 'target' => true ] ] );
+        ?>
 	</p>
 </div>
 <div class="step-tracker-wrapper" id="add-image">
 	<ul class="step-tracker steps-3">
 		<li class="step current">
-			<span></span><h2><?php _e('Select image', $slug) ?></h2>
+			<span></span><h2><?php esc_html_e('Select image', 'mabel-shoppable-images-lite' ) ?></h2>
 		</li>
 		<li class="step">
-			<span></span><h2><?php _e('Add tags', $slug) ?></h2>
+			<span></span><h2><?php esc_html_e('Add tags',  'mabel-shoppable-images-lite' ) ?></h2>
 		</li>
 		<li class="step">
-			<span></span><h2><?php _e('Save', $slug) ?></h2>
+			<span></span><h2><?php esc_html_e('Save',  'mabel-shoppable-images-lite' ) ?></h2>
 		</li>
 	</ul>
 	<div class="step-tracker-content">
 		<div data-step="1" class="t-c p-t-5">
-			<button class="mabel-btn btn-select-image"><?php _e('Select an image', $slug); ?></button>
+			<button class="mabel-btn btn-select-image"><?php esc_html_e('Select an image',  'mabel-shoppable-images-lite' ); ?></button>
 		</div>
 		<div data-step="2" class="t-c p-t-5" style="display: none;">
 			<div class="selected-img-holder">
 				<img src="" class="u-max-850-width" />
 			</div>
 			<div class="p-t-2">
-				<button class="mabel-btn-prev-step mabel-btn mabel-secondary">Back</button>
-				<button class="btn-save-image mabel-btn">Save</button>
+				<button class="mabel-btn-prev-step mabel-btn mabel-secondary"><?php esc_html_e('Back',  'mabel-shoppable-images-lite' ); ?></button>
+				<button class="btn-save-image mabel-btn"><?php esc_html_e('Save',  'mabel-shoppable-images-lite' ); ?></button>
 			</div>
 		</div>
 		<div data-step="3" class="t-c p-t-5" style="display: none;">
 			<span>
-				All done! You can use the following shortcode to display the image on the frontend:
+                <?php esc_html_e('All done! You can use the following shortcode to display the image on the frontend:',  'mabel-shoppable-images-lite' ); ?>
 				<code><span class="active-shortcode"></span></code>
 			</span>
 			<div class="p-t-2">
-				<button class="btn-start-over mabel-btn">Add another image</button>
+				<button class="btn-start-over mabel-btn"><?php esc_html_e('Add another image',  'mabel-shoppable-images-lite' ); ?></button>
 			</div>
 		</div>
 	</div>

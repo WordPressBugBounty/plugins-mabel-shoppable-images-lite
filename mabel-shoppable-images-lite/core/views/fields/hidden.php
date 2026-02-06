@@ -2,4 +2,4 @@
 /** @var \MABEL_SILITE\Core\Models\Hidden_Option $option */
 ?>
 
-<input type="hidden" name="<?php echo $option->name; ?>" value="<?php echo $option->value; ?>" />
+<input type="hidden" name="<?php echo esc_attr( $option->name ) ?>" value="<?php echo esc_attr( $option->value ) ?>" />

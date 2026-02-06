@@ -72,31 +72,7 @@ namespace MABEL_SILITE\Core\Common\Managers
 
 			return null;
 		}
-
-		/**
-		 * Translates the default setting if no setting was found
-		 * @param $key
-		 *
-		 * @return null|string
-		 */
-		public static function get_translated_setting($key)
-		{
-			self::fetch_settings();
-
-			$setting = isset( self::$settings[$key] ) ? self::$settings[$key] : null;
-
-			if($setting != null)
-				return $setting;
-
-			if(!is_array(self::$defaults))
-				return null;
-
-			if(isset(self::$defaults[$key]))
-				return __(self::$defaults[$key], Config_Manager::$slug);
-
-			return null;
-		}
-
+        
 		private static function sanitize()
 		{
 			foreach(self::$settings as $k => $v){

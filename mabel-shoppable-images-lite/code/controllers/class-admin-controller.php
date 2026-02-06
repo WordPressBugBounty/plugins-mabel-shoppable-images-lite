@@ -13,21 +13,21 @@ namespace MABEL_SILITE\Code\Controllers
 	use MABEL_SILITE\Core\Models\Custom_Option;
 	use MABEL_SILITE\Core\Models\Text_Option;
 
-	if(!defined('ABSPATH')){die;}
+	if( ! defined( 'ABSPATH' ) ) { die; }
 
-	class Admin_Controller extends Admin
-	{
-		private $slug;
+	class Admin_Controller extends Admin {
+
+        		private $slug;
         public $capability;
 
-		public function __construct()
-		{
-			parent::__construct(new Options_Manager());
+		public function __construct() {
+
+            			parent::__construct(new Options_Manager());
 			$this->slug = Config_Manager::$slug;
 
-            $this->capability = apply_filters('shoppable_images_capability','manage_options');
+            $this->capability = apply_filters( 'shoppable_images_capability', 'manage_options' );
 
-            if( isset($_GET['page']) && $_GET['page'] === $this->slug ) {
+            if( isset( $_GET['page'] ) && $_GET['page'] === $this->slug ) {
 
                 $this->add_mediamanager_scripts = true;
 
@@ -65,7 +65,7 @@ namespace MABEL_SILITE\Code\Controllers
 
             $ps = wc_get_products( [
                 'limit'     => -1,
-                'include'   => array_map('intval', explode(',',$_GET['ids']) )
+                'include'   => array_map( 'intval', explode(',',sanitize_text_field(wp_unslash($_GET['ids']))) )
             ] );
 
 			$products = [];
@@ -86,40 +86,49 @@ namespace MABEL_SILITE\Code\Controllers
 			wp_die();
 		}
 
-		public function get_wc_product_by_id()
-		{
-			echo json_encode( $this->get_wc_product( $_GET['id'] ) );
+		public function get_wc_product_by_id() {
+            if ( ! empty( $_GET['id'] ) ) {
+                echo json_encode( $this->get_wc_product( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) );
+            }
+
 			wp_die();
 		}
 
-		public function get_wc_product_by_name()
-		{
-			global $wpdb;
+		public function get_wc_product_by_name() {
 
-			$product_ids = $wpdb->get_results( $wpdb->prepare( "
-				SELECT ID as id 
-				FROM {$wpdb->prefix}posts i
-				WHERE post_type = 'product' AND post_title LIKE %s
-				ORDER BY post_title ASC 
-				LIMIT 5",'%' . $_GET['q'] . '%'
-			));
+            $term = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
 
-			$products = array();
+                        if( empty( $term ) ) wp_send_json( [] );
 
-			foreach( Enumerable::from($product_ids)->select( function($x){return $x->id;})->toArray() as $pid ) {
-				$product = $this->get_wc_product($pid);
-				if(empty($product)) continue;
-				array_push($products,$product);
-			}
+            $limit      = absint( apply_filters( 'woocommerce_json_search_limit', 10 ) );
+            $data_store = \WC_Data_Store::load( 'product' );
+            $ids        = $data_store->search_products( $term, '', false, true, $limit );
+            $products   = [];
 
-			echo json_encode($products);
-			wp_die();
-		}
+            foreach ( $ids as $id ) {
 
-		private function get_wc_product($pid)
-		{
+                if( empty( $id ) ) continue; 
 
-			$product = wc_get_product($pid);
+                $product_object = wc_get_product( $id );
+
+                if ( ! wc_products_array_filter_readable( $product_object ) ) continue;
+
+                                $products[] = [
+                    'id'    => $product_object->get_id(),
+                    'name'  => preg_replace('/\s\(#\d+\)/', '', $product_object->get_formatted_name(), 1),
+                    'price' => get_woocommerce_currency_symbol() . wc_get_price_to_display( $product_object ),
+                    'url'   => $product_object->get_permalink(),
+                ];
+
+            }
+
+            wp_send_json( $products );
+
+            		}
+
+		private function get_wc_product( $pid ) {
+
+			$product = wc_get_product( $pid );
 
 			return array(
 				'name'  => $product->get_title(),
@@ -129,25 +138,26 @@ namespace MABEL_SILITE\Code\Controllers
 			);
 		}
 
-		public function delete_image()
-		{
-            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'sinonce')) {
+		public function delete_image() {
+            if( ! current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
                 wp_send_json_error();
             }
 
-			wp_delete_post( $_REQUEST['imageId'], true );
+            if ( ! empty( $_REQUEST['imageId'] ) ) {
+                wp_delete_post( sanitize_text_field( wp_unslash( $_REQUEST['imageId'] ) ), true );
+            }
+
 			wp_die();
 		}
 
-		public function get_image()
-		{
-            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'sinonce')) {
+		public function get_image() {
+            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
                 wp_send_json_error();
             }
 
 			if(!isset($_GET['id'])) wp_die();
 
-			$post = get_post(sanitize_text_field($_GET['id']));
+            $post = get_post(sanitize_text_field(wp_unslash($_GET['id'])));
 			if($post == null) wp_die();
 
 			wp_send_json(array(
@@ -157,13 +167,12 @@ namespace MABEL_SILITE\Code\Controllers
 			));
 		}
 
-		public function get_images()
-		{
-            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'sinonce')) {
+		public function get_images() {
+            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
                 wp_send_json_error();
             }
 
-			$page = isset($_GET['page']) ? $_GET['page'] : 1;
+            $page = isset($_GET['page']) ? intval( wp_unslash( $_GET['page'] ) ) : 1;
 
 			$post_ids = new \WP_Query(array(
 				'post_type' => 'mb_siwc_lite_image',
@@ -192,42 +201,40 @@ namespace MABEL_SILITE\Code\Controllers
 			));
 		}
 
-		public function update_image()
-		{
-            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'sinonce')) {
+		public function update_image() {
+            if( empty( $_POST['id'] ) || empty( $_POST['tags'] ) || ! current_user_can($this->capability) || ! isset($_REQUEST['nonce']) || !  wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
                 wp_send_json_error();
             }
 
 			if(isset($_POST['id'])) {
-				update_post_meta( intval( $_POST['id'] ), 'tags', sanitize_text_field( $_POST['tags'] ) );
+				update_post_meta( intval( $_POST['id'] ), 'tags', sanitize_text_field( wp_unslash( $_POST['tags'] ) ) );
 			}
 			wp_die();
 		}
 
-		public function add_image()
-		{
-            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'sinonce')) {
-                wp_send_json_error();
+		public function add_image() {
+
+            if( empty( $_POST['tags'] ) || empty( $_POST['image'] ) || empty( $_POST['thumb'] ) || ! current_user_can( $this->capability ) || ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
+                wp_send_json_error( __( 'Invalid nonce',  'mabel-shoppable-images-lite' ) );
             }
 
-			$id = wp_insert_post(array(
+			$id = wp_insert_post( [
 				'post_type' => 'mb_siwc_lite_image',
 				'post_status' => 'publish'
-			),true);
+			], true );
 
-			if(!is_wp_error( $id ) && $id > 0){
+			if( ! is_wp_error( $id ) && $id > 0 ) {
 
-				add_post_meta($id,'image', json_encode(array(
-					'image' => sanitize_text_field($_POST['image']),
-					'thumb' => sanitize_text_field($_POST['thumb'])
-				)));
-				add_post_meta($id,'tags', sanitize_text_field($_POST['tags']));
+				add_post_meta( $id, 'image', json_encode( [
+                    'image' => sanitize_text_field( wp_unslash( $_POST['image'] ) ),
+                    'thumb' => sanitize_text_field( wp_unslash( $_POST['thumb'] ) )
+				] ) );
+                add_post_meta( $id, 'tags', sanitize_text_field( wp_unslash( $_POST['tags'] ) ) );
 			}
-			wp_die($id);
+			wp_die( intval( $id ) );
 		}
 
-		public function init_admin_page()
-		{
+		public function init_admin_page() {
 			add_action(Config_Manager::$slug . '-render-sidebar', array($this,'render_main_sidebar'));
 
 			$this->options_manager->add_section('design', __('Design','mabel-shoppable-images-lite'), 'admin-customizer', true);
@@ -246,7 +253,7 @@ namespace MABEL_SILITE\Code\Controllers
 				new ColorPicker_Option(
 					'tagfgcolor',
 					Settings_Manager::get_setting('tagfgcolor'),
-					__('Icon color','mabel-shoppable-images-lite','mabel-shoppable-images-lite')
+					__('Icon color','mabel-shoppable-images-lite' )
 				)
 			);
 

@@ -4,9 +4,7 @@ namespace MABEL_SILITE\Core\Common\Managers
 {
 
 	use MABEL_SILITE\Core\Common\Registry;
-
-	if(!defined('ABSPATH')){die;}
-
+    
 	/**
 	 * Loads the translations in 'languages' folder.
 	 * Class Language
