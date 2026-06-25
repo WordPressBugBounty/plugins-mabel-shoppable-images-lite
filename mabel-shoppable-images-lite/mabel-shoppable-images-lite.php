@@ -3,12 +3,12 @@
  * Plugin Name: Shoppable Images (Lookbook) for WooCommerce
  * Plugin URI: https://studiowombat.com/plugin/shoppable-images/?utm_source=sifree&utm_medium=plugin&utm_campaign=plugins
  * Description: Easily add 'shoppable images' (images with hotspots) to your website or store.
- * Version: 1.3
+ * Version: 1.3.1
  * Author: Studio Wombat
  * Author URI: https://studiowombat.com/?utm_source=sifree&utm_medium=plugin&utm_campaign=plugins
  * Text Domain: mabel-shoppable-images-lite
  * WC requires at least: 3.6.0
- * WC tested up to: 10.3
+ * WC tested up to: 10.9
  * License: GPLv2 or later
 */
 
@@ -49,7 +49,7 @@ function run_MABEL_SILITE()
 		plugin_dir_url( __FILE__ ),
 		plugin_basename( __FILE__ ),
 		'Shoppable Images Lite',
-		'1.3',
+		'1.3.1',
 		'mb-si-lite-settings'
 	);
 	$plugin->run();

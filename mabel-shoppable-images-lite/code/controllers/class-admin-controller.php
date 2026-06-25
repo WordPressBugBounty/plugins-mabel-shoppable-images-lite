@@ -58,6 +58,10 @@ namespace MABEL_SILITE\Code\Controllers
 
 		public function get_wc_products_by_ids() {
 
+            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
+                wp_send_json_error();
+            }
+
 			if( empty( $_GET['ids'] ) ) {
 				echo json_encode( [] );
 				wp_die();
@@ -87,6 +91,10 @@ namespace MABEL_SILITE\Code\Controllers
 		}
 
 		public function get_wc_product_by_id() {
+            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
+                wp_send_json_error();
+            }
+
             if ( ! empty( $_GET['id'] ) ) {
                 echo json_encode( $this->get_wc_product( sanitize_text_field( wp_unslash( $_GET['id'] ) ) ) );
             }
@@ -95,6 +103,10 @@ namespace MABEL_SILITE\Code\Controllers
 		}
 
 		public function get_wc_product_by_name() {
+
+            if(!current_user_can($this->capability) || !isset($_REQUEST['nonce']) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'sinonce' ) ) {
+                wp_send_json_error();
+            }
 
             $term = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
 

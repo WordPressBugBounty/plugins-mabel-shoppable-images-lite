@@ -3,9 +3,9 @@ Contributors: studiowombat,maartenbelmans
 Donate link: https://www.paypal.me/maartenbelmans
 Tags: shoppable image,hotspots,woocommerce,clickable image, image hotspots
 Requires at least: 3.7
-Tested up to: 6.8
+Tested up to: 7.0
 Required PHP: 5.6
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,9 @@ More info about the premium version [can be found here](https://studiowombat.com
 14. Example of how it could look on your website.
 
 == Changelog ==
+
+= version 1.3.1 =
+ * Improvement: added extra security to backend actions.
 
 = version 1.3 =
  * Improvement: properly escape all output.
